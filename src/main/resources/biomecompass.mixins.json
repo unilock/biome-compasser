@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.mayaqq.biomecompass.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "CompassItemMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
