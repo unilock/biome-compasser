@@ -6,5 +6,5 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface CompassExtension {
-    public void track(BlockPos pos, World world, PlayerEntity playerEntity, ItemStack itemStack, String biomeName);
+    void track(BlockPos pos, World world, PlayerEntity playerEntity, ItemStack itemStack, String biomeName);
 }

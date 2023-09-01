@@ -5,21 +5,22 @@ import dev.mayaqq.biomecompass.CompassExtension;
 import dev.mayaqq.biomecompass.gui.BiomeSelectionGui;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.CompassItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,8 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CompassItem.class)
 public abstract class CompassItemMixin extends Item implements CompassExtension {
-
-    @Shadow @Final private static Logger LOGGER;
 
     @Shadow public abstract String getTranslationKey(ItemStack stack);
 
@@ -59,9 +58,9 @@ public abstract class CompassItemMixin extends Item implements CompassExtension 
     private void writeBiomeNbt(RegistryKey<World> worldKey, BlockPos pos, NbtCompound nbt, String biomeName) {
         nbt.put("LodestonePos", NbtHelper.fromBlockPos(pos));
         if (biomeName != null) nbt.putString("BiomeName", biomeName);
-        DataResult var10000 = World.CODEC.encodeStart(NbtOps.INSTANCE, worldKey);
+        DataResult<NbtElement> var10000 = World.CODEC.encodeStart(NbtOps.INSTANCE, worldKey);
         var10000.resultOrPartial(null).ifPresent((nbtElement) -> {
-            nbt.put("LodestoneDimension", (NbtElement) nbtElement);
+            nbt.put("LodestoneDimension", nbtElement);
         });
         nbt.putBoolean("IsBiome", true);
         nbt.putBoolean("LodestoneTracked", true);

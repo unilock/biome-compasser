@@ -1,9 +1,7 @@
 package dev.mayaqq.biomecompass.gui;
 
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import dev.mayaqq.biomecompass.BiomeCompass;
 import dev.mayaqq.biomecompass.CompassExtension;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SignGui;
@@ -12,21 +10,19 @@ import net.minecraft.command.argument.RegistryPredicateArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.command.LocateCommand;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.TagKey;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
@@ -37,7 +33,7 @@ import java.util.function.Predicate;
 public class BiomeSelectionGui {
 
     public static Registry<Biome> getRegistry(ServerWorld world) {
-        return world.getRegistryManager().get(Registry.BIOME_KEY);
+        return world.getRegistryManager().get(RegistryKeys.BIOME);
     }
 
     public static void open(ServerPlayerEntity player, int page, Hand hand) {
@@ -60,7 +56,7 @@ public class BiomeSelectionGui {
 
         gui.setTitle(Text.of(title.toString()));
 
-        Registry<Biome> biomes = getRegistry(player.getWorld());
+        Registry<Biome> biomes = getRegistry(player.getServerWorld());
 
         ArrayList<Biome> biomesList = new ArrayList<>(biomes.stream().toList());
 
@@ -90,15 +86,15 @@ public class BiomeSelectionGui {
                     .setLore(new ArrayList<>(List.of(
                             Text.of("§7Identifier: " + biomeId),
                             Text.of("§7Warmth: " + biome.getTemperature()),
-                            Text.of("§7Humidity: " + biome.getDownfall())
+                            Text.of("§7Humidity: " + biome.getPrecipitation(BlockPos.ORIGIN))
                     )))
                     .setCallback((index, type, action) -> {
                         gui.close();
                         try {
-                            Pair<BlockPos, RegistryEntry<Biome>> pair = executeLocateBiome(player.getBlockPos(), player.getWorld(), biome);
+                            Pair<BlockPos, RegistryEntry<Biome>> pair = executeLocateBiome(player.getBlockPos(), player.getServerWorld(), biome);
                             player.sendMessage(Text.of("Found " + biomeName.getString() + "§f at §6" + pair.getFirst().getX() + "§f, §6" + pair.getFirst().getY() + "§f, §6" + pair.getFirst().getZ() + " §fwhich is §6" +
                                     (int) getDistance(player.getBlockX(), player.getBlockZ(), pair.getFirst().getX(), pair.getFirst().getZ()) + " §fblocks away."), false);
-                            ((CompassExtension) player.getStackInHand(hand).getItem()).track(pair.getFirst(), player.getWorld(), player, player.getStackInHand(hand), biomeName.getString());
+                            ((CompassExtension) player.getStackInHand(hand).getItem()).track(pair.getFirst(), player.getServerWorld(), player, player.getStackInHand(hand), biomeName.getString());
                         } catch (Exception e) {
                             player.sendMessage(Text.of("§4Could not find " + biomeName.getString()), false);
                         }
@@ -130,9 +126,7 @@ public class BiomeSelectionGui {
                 .setItem(Items.BARRIER)
                 .setName(Text.of("§4Close"))
                 .setLore(new ArrayList<>())
-                .setCallback((index, type, action) -> {
-                    gui.close();
-                })
+                .setCallback((index, type, action) -> gui.close())
         );
 
         if (page > 0) {
@@ -140,9 +134,7 @@ public class BiomeSelectionGui {
                     .setItem(Items.ARROW)
                     .setName(Text.of("Previous Page"))
                     .setLore(new ArrayList<>())
-                    .setCallback((index, type, action) -> {
-                        open(player, page - 1, hand);
-                    })
+                    .setCallback((index, type, action) -> open(player, page - 1, hand))
             );
         }
 
@@ -151,9 +143,7 @@ public class BiomeSelectionGui {
                     .setItem(Items.ARROW)
                     .setName(Text.of("Next Page"))
                     .setLore(new ArrayList<>())
-                    .setCallback((index, type, action) -> {
-                        open(player, page + 1, hand);
-                    })
+                    .setCallback((index, type, action) -> open(player, page + 1, hand))
             );
         }
 
@@ -161,11 +151,11 @@ public class BiomeSelectionGui {
     }
 
     private static Pair<BlockPos, RegistryEntry<Biome>> executeLocateBiome(BlockPos pos, ServerWorld world, Biome biome) {
-        Predicate<RegistryEntry<Biome>> predicate = new RegistryKeyBased<>(RegistryKey.of(Registry.BIOME_KEY, getRegistry(world).getId(biome)));
+        Predicate<RegistryEntry<Biome>> predicate = new RegistryKeyBased<>(RegistryKey.of(RegistryKeys.BIOME, getRegistry(world).getId(biome)));
         return world.locateBiome(predicate, pos, 6400, 32, 64);
     }
 
-    static record RegistryKeyBased<T>(RegistryKey<T> key) implements RegistryPredicateArgumentType.RegistryPredicate<T> {
+    record RegistryKeyBased<T>(RegistryKey<T> key) implements RegistryPredicateArgumentType.RegistryPredicate<T> {
 
         public Either<RegistryKey<T>, TagKey<T>> getKey() {
             return Either.left(this.key);
