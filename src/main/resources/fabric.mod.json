@@ -14,9 +14,6 @@
   "icon": "assets/biomecompass/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "dev.mayaqq.biomecompass.client.BiomeCompassClient"
-    ],
     "main": [
       "dev.mayaqq.biomecompass.BiomeCompass"
     ]

@@ -6,8 +6,6 @@
   "mixins": [
     "CompassItemMixin"
   ],
-  "client": [
-  ],
   "injectors": {
     "defaultRequire": 1
   }
