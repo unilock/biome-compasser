@@ -78,7 +78,7 @@ public class BiomeSelectionGui {
             Identifier biomeId = biomes.getId(biome);
             Text biomeName = Text.of("§2" + Text.translatable("biome." + biomeId.getNamespace() + "." + biomeId.getPath()).getString());
 
-            Item biomeItem = biome.getTemperature() > 0.8 ? Items.LAVA_BUCKET : biome.getTemperature() < 0.2 ? Items.SNOWBALL : Items.GRASS_BLOCK;
+            Item biomeItem = biome.getTemperature() > 1.0 ? Items.LAVA_BUCKET : biome.getTemperature() < 0.15 ? Items.SNOWBALL : Items.GRASS_BLOCK;
 
             gui.setSlot(i - 45 * page, new GuiElementBuilder()
                     .setItem(biomeItem)
