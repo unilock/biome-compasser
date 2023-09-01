@@ -2,7 +2,7 @@ package dev.mayaqq.biomecompass.gui;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import dev.mayaqq.biomecompass.CompassExtension;
+import dev.mayaqq.biomecompass.item.BiomeCompassItem;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SignGui;
 import eu.pb4.sgui.api.gui.SimpleGui;
@@ -94,7 +94,7 @@ public class BiomeSelectionGui {
                             Pair<BlockPos, RegistryEntry<Biome>> pair = executeLocateBiome(player.getBlockPos(), player.getServerWorld(), biome);
                             player.sendMessage(Text.of("Found " + biomeName.getString() + "§f at §6" + pair.getFirst().getX() + "§f, §6" + pair.getFirst().getY() + "§f, §6" + pair.getFirst().getZ() + " §fwhich is §6" +
                                     (int) getDistance(player.getBlockX(), player.getBlockZ(), pair.getFirst().getX(), pair.getFirst().getZ()) + " §fblocks away."), false);
-                            ((CompassExtension) player.getStackInHand(hand).getItem()).track(pair.getFirst(), player.getServerWorld(), player, player.getStackInHand(hand), biomeName.getString());
+                            ((BiomeCompassItem) player.getStackInHand(hand).getItem()).track(pair.getFirst(), player.getServerWorld(), player, player.getStackInHand(hand), biomeName.getString());
                         } catch (Exception e) {
                             player.sendMessage(Text.of("§4Could not find " + biomeName.getString()), false);
                         }

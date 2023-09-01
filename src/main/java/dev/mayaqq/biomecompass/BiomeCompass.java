@@ -1,5 +1,6 @@
 package dev.mayaqq.biomecompass;
 
+import dev.mayaqq.biomecompass.registry.BCItems;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -11,9 +12,10 @@ public class BiomeCompass implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        BCItems.init();
     }
 
-    public static Identifier id(String id) {
-        return new Identifier("biomecompass", id);
+    public static Identifier id(String path) {
+        return new Identifier("biomecompass", path);
     }
 }
