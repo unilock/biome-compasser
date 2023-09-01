@@ -3,12 +3,12 @@
   "id": "biomecompass",
   "version": "${version}",
   "name": "Biome Compass",
-  "description": "Like nature's compass, but server-side!",
+  "description": "Like Nature's Compass, but server-side!",
   "authors": [
     "Mayaqq"
   ],
   "contact": {
-    "repo": "https://github.com/MayaqqDev/BiomeCompassRepolymerised"
+    "sources": "https://github.com/MayaqqDev/biome-compass"
   },
   "license": "LGPL-3.0",
   "icon": "assets/biomecompass/icon.png",
