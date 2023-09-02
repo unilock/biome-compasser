@@ -1,4 +1,19 @@
 {
   "itemGroup.biomecompass.item_group": "Biome Compass",
-  "item.biomecompass.biome_compass": "Biome Compass"
+  "item.biomecompass.biome_compass": "Biome Compass",
+  "item.biomecompass.biome_compass.tooltip.biome_name": "Biome: %s",
+  "item.biomecompass.biome_compass.tooltip.biome_pos": "Pos: %s",
+  "gui.biomecompass.biome_compass.title": "Biome Compass",
+  "gui.biomecompass.biome_compass.title.with_biome": "Biome Compass | %s",
+  "gui.biomecompass.biome_compass.search": "Search",
+  "gui.biomecompass.biome_compass.close": "Close",
+  "gui.biomecompass.biome_compass.previous_page": "Previous Page",
+  "gui.biomecompass.biome_compass.next_page": "Next Page",
+  "gui.biomecompass.biome_compass.current_filter": "Current filter: %s",
+  "gui.biomecompass.biome_compass.filter_reset": "Right click to reset",
+  "gui.biomecompass.biome_compass.identifier": "Identifier: %s",
+  "gui.biomecompass.biome_compass.warmth": "Warmth: %s",
+  "gui.biomecompass.biome_compass.precipitation": "Precipitation: %s",
+  "gui.biomecompass.biome_compass.found": "Found %s at %s which is %d blocks away.",
+  "gui.biomecompass.biome_compass.not_found": "Could not find %s"
 }

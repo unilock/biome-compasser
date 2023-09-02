@@ -2,6 +2,7 @@ package dev.mayaqq.biomecompass.item;
 
 import dev.mayaqq.biomecompass.BiomeCompass;
 import dev.mayaqq.biomecompass.gui.BiomeSelectionGui;
+import dev.mayaqq.biomecompass.helper.TextHelper;
 import dev.mayaqq.biomecompass.registry.BCItems;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import net.minecraft.client.item.TooltipContext;
@@ -18,19 +19,21 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BiomeCompassItem extends Item implements PolymerItem {
-    private static final String BIOME_NAME_KEY = BiomeCompass.id("biome_name").toString();
-    private static final String BIOME_DIMENSION_KEY = BiomeCompass.id("biome_dimension").toString();
-    private static final String BIOME_POS_KEY = BiomeCompass.id("biome_pos").toString();
-    private static final String BIOME_TRACKED_KEY = BiomeCompass.id("biome_tracked").toString();
+    public static final String BIOME_NAME_KEY = BiomeCompass.id("biome_name").toString();
+    public static final String BIOME_DIMENSION_KEY = BiomeCompass.id("biome_dimension").toString();
+    public static final String BIOME_POS_KEY = BiomeCompass.id("biome_pos").toString();
+    public static final String BIOME_TRACKED_KEY = BiomeCompass.id("biome_tracked").toString();
 
     public BiomeCompassItem(Settings settings) {
         super(settings);

@@ -2,6 +2,7 @@ package dev.mayaqq.biomecompass.gui;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import dev.mayaqq.biomecompass.helper.TextHelper;
 import dev.mayaqq.biomecompass.item.BiomeCompassItem;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.gui.SignGui;
@@ -9,7 +10,6 @@ import eu.pb4.sgui.api.gui.SimpleGui;
 import net.minecraft.command.argument.RegistryPredicateArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -19,10 +19,10 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
@@ -43,18 +43,7 @@ public class BiomeSelectionGui {
     public static void open(ServerPlayerEntity player, int page, Hand hand, String filter) {
         SimpleGui gui = new SimpleGui(ScreenHandlerType.GENERIC_9X6, player, false);
 
-        NbtCompound nbt = player.getStackInHand(hand).getNbt();
-        StringBuilder title = new StringBuilder();
-
-        title.append("Biome Compass");
-
-        if (nbt != null && nbt.contains("BiomeName")) {
-            String biomeName = nbt.getString("BiomeName");
-            title.append(" §8| ");
-            title.append(biomeName);
-        }
-
-        gui.setTitle(Text.of(title.toString()));
+        gui.setTitle(Text.translatable("gui.biomecompass.biome_compass.title"));
 
         Registry<Biome> biomes = getRegistry(player.getServerWorld());
 
@@ -63,7 +52,7 @@ public class BiomeSelectionGui {
         for (int i = 0; i < biomesList.size(); i++) {
             Biome biome = biomesList.get(i);
             Identifier biomeId = biomes.getId(biome);
-            String name = Text.translatable("biome." + biomeId.getNamespace() + "." + biomeId.getPath()).getString();
+            String name = TextHelper.getBiomeNameFormatted(biomeId).getString();
             if (!name.contains(filter) && !biomeId.toString().contains(filter)) {
                 biomesList.remove(i);
                 i--;
@@ -76,7 +65,7 @@ public class BiomeSelectionGui {
             }
             Biome biome = biomesList.get(i);
             Identifier biomeId = biomes.getId(biome);
-            Text biomeName = Text.of("§2" + Text.translatable("biome." + biomeId.getNamespace() + "." + biomeId.getPath()).getString());
+            Text biomeName = TextHelper.getBiomeNameFormatted(biomeId);
 
             Item biomeItem = biome.getTemperature() > 1.0 ? Items.LAVA_BUCKET : biome.getTemperature() < 0.15 ? Items.SNOWBALL : Items.GRASS_BLOCK;
 
@@ -84,19 +73,18 @@ public class BiomeSelectionGui {
                     .setItem(biomeItem)
                     .setName(biomeName)
                     .setLore(new ArrayList<>(List.of(
-                            Text.of("§7Identifier: " + biomeId),
-                            Text.of("§7Warmth: " + biome.getTemperature()),
-                            Text.of("§7Humidity: " + biome.getPrecipitation(BlockPos.ORIGIN))
+                            Text.translatable("gui.biomecompass.biome_compass.identifier", biomeId).formatted(Formatting.GRAY),
+                            Text.translatable("gui.biomecompass.biome_compass.warmth", biome.getTemperature()).formatted(Formatting.GRAY),
+                            Text.translatable("gui.biomecompass.biome_compass.precipitation", biome.getPrecipitation(BlockPos.ORIGIN)).formatted(Formatting.GRAY)
                     )))
                     .setCallback((index, type, action) -> {
                         gui.close();
                         try {
                             Pair<BlockPos, RegistryEntry<Biome>> pair = executeLocateBiome(player.getBlockPos(), player.getServerWorld(), biome);
-                            player.sendMessage(Text.of("Found " + biomeName.getString() + "§f at §6" + pair.getFirst().getX() + "§f, §6" + pair.getFirst().getY() + "§f, §6" + pair.getFirst().getZ() + " §fwhich is §6" +
-                                    (int) getDistance(player.getBlockX(), player.getBlockZ(), pair.getFirst().getX(), pair.getFirst().getZ()) + " §fblocks away."), false);
+                            player.sendMessage(Text.translatable("gui.biomecompass.biome_compass.found", biomeName, TextHelper.getBlockPosFormatted(pair.getFirst()), TextHelper.getDistanceFromPlayer(player, pair.getFirst())));
                             ((BiomeCompassItem) player.getStackInHand(hand).getItem()).track(pair.getFirst(), player.getServerWorld(), player, player.getStackInHand(hand), biomeName.getString());
                         } catch (Exception e) {
-                            player.sendMessage(Text.of("§4Could not find " + biomeName.getString()), false);
+                            player.sendMessage(Text.translatable("gui.biomecompass.biome_compass.not_found", biomeName).formatted(Formatting.DARK_RED), false);
                         }
                     })
             );
@@ -111,9 +99,9 @@ public class BiomeSelectionGui {
 
         gui.setSlot(50, new GuiElementBuilder()
                 .setItem(Items.OAK_SIGN)
-                .setName(Text.of("Search"))
-                .addLoreLine(Text.of("§7Current filter: " + filter))
-                .addLoreLine(Text.of("§7Right click to reset"))
+                .setName(Text.translatable("gui.biomecompass.biome_compass.search"))
+                .addLoreLine(Text.translatable("gui.biomecompass.biome_compass.current_filter", filter).formatted(Formatting.GRAY))
+                .addLoreLine(Text.translatable("gui.biomecompass.biome_compass.filter_reset").formatted(Formatting.GRAY))
                 .setCallback((index, type, action) -> {
                     if (type.isRight) {
                         open(player, page, hand);
@@ -124,7 +112,7 @@ public class BiomeSelectionGui {
         );
         gui.setSlot(49, new GuiElementBuilder()
                 .setItem(Items.BARRIER)
-                .setName(Text.of("§4Close"))
+                .setName(Text.translatable("gui.biomecompass.biome_compass.close").formatted(Formatting.DARK_RED))
                 .setLore(new ArrayList<>())
                 .setCallback((index, type, action) -> gui.close())
         );
@@ -132,7 +120,7 @@ public class BiomeSelectionGui {
         if (page > 0) {
             gui.setSlot(45, new GuiElementBuilder()
                     .setItem(Items.ARROW)
-                    .setName(Text.of("Previous Page"))
+                    .setName(Text.translatable("gui.biomecompass.biome_compass.previous_page"))
                     .setLore(new ArrayList<>())
                     .setCallback((index, type, action) -> open(player, page - 1, hand))
             );
@@ -141,7 +129,7 @@ public class BiomeSelectionGui {
         if (page < biomesList.size() / 45) {
             gui.setSlot(53, new GuiElementBuilder()
                     .setItem(Items.ARROW)
-                    .setName(Text.of("Next Page"))
+                    .setName(Text.translatable("gui.biomecompass.biome_compass.next_page"))
                     .setLore(new ArrayList<>())
                     .setCallback((index, type, action) -> open(player, page + 1, hand))
             );
@@ -186,11 +174,5 @@ public class BiomeSelectionGui {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static float getDistance(int x1, int y1, int x2, int y2) {
-        int i = x2 - x1;
-        int j = y2 - y1;
-        return MathHelper.sqrt((float)(i * i + j * j));
     }
 }
