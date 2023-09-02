@@ -103,7 +103,7 @@ public class BiomeCompassItem extends Item implements PolymerItem {
     public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
         ItemStack fake = PolymerItem.super.getPolymerItemStack(itemStack, context, player);
 
-        if (hasBiome(itemStack) || super.hasGlint(itemStack)) {
+        if (hasBiome(itemStack)) {
             fake.addEnchantment(Enchantments.INFINITY, 0);
         }
 
