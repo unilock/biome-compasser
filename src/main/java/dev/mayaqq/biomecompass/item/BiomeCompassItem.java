@@ -96,6 +96,13 @@ public class BiomeCompassItem extends Item implements PolymerItem {
         super.use(world, user, hand);
 
         if (user instanceof ServerPlayerEntity player) {
+            if (player.isCreative() && player.isSneaking() && player.getStackInHand(hand).hasNbt() && player.getStackInHand(hand).getNbt().contains(BIOME_POS_KEY)) {
+                BlockPos pos = NbtHelper.toBlockPos((NbtCompound) player.getStackInHand(hand).getNbt().get(BIOME_POS_KEY));
+                // TODO: somehow get top block at position? (y=120 is usually safe)
+                player.requestTeleport(pos.getX(), 120, pos.getZ());
+                return TypedActionResult.success(user.getStackInHand(hand));
+            }
+
             BiomeSelectionGui.open(player, 0, hand);
             return TypedActionResult.success(user.getStackInHand(hand));
         } else {
