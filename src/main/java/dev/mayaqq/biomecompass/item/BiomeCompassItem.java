@@ -83,6 +83,15 @@ public class BiomeCompassItem extends Item implements PolymerItem {
     }
 
     @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        if (stack.hasNbt() && stack.getNbt().contains(BIOME_NAME_KEY) && stack.getNbt().contains(BIOME_POS_KEY)) {
+            tooltip.add(Text.translatable("item.biomecompass.biome_compass.tooltip.biome_name", TextHelper.getBiomeNameFormatted(stack)));
+            tooltip.add(Text.translatable("item.biomecompass.biome_compass.tooltip.biome_pos", TextHelper.getBlockPosFormatted(stack)));
+        }
+        super.appendTooltip(stack, world, tooltip, context);
+    }
+
+    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         super.use(world, user, hand);
 
