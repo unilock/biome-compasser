@@ -41,7 +41,7 @@ public class BiomeCompassItem extends Item implements PolymerItem {
 
     private static boolean hasBiome(ItemStack stack) {
         NbtCompound nbt = stack.getNbt();
-        return nbt != null && (nbt.contains(BIOME_NAME_KEY) || nbt.contains(BIOME_POS_KEY));
+        return nbt != null && nbt.contains(BIOME_NAME_KEY);
     }
 
     private static Optional<RegistryKey<World>> getBiomeDimension(NbtCompound nbt) {
