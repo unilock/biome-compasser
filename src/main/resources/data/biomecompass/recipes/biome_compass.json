@@ -17,10 +17,7 @@
     }
   },
   "result": {
-    "item": "minecraft:compass",
-    "data": {
-      "IsBiome": true
-    },
+    "item": "biomecompass:biome_compass",
     "count": 1
   }
 }
