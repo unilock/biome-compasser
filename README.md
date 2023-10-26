@@ -7,7 +7,7 @@
 [![Github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets/cozy/available/github_64h.png)](https://github.com/MayaqqDev/biome-compass/)
 ## `Information`
 
-Works like [Nature's Compass](https://github.com/MattCzyr/NaturesCompass) but completely server-side!
+Works like [Nature's Compass](https://github.com/MattCzyr/NaturesCompass) but completely server-side! 
 
 ## `Community`
 

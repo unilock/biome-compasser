@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "minecraft:saplings"
+    },
+    "0": {
+      "tag": "minecraft:logs"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    }
+  },
+  "pattern": [
+    "#0#",
+    "0C0",
+    "#0#"
+  ],
+  "result": {
+    "item": "biomecompass:biome_compass"
+  },
+  "show_notification": true
+}
