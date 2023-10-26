@@ -7,6 +7,10 @@
   "authors": [
     "Mayaqq"
   ],
+  "contributors": [
+    "unilock",
+    "800020h"
+  ],
   "contact": {
     "sources": "https://github.com/MayaqqDev/biome-compass"
   },
@@ -16,11 +20,21 @@
   "entrypoints": {
     "main": [
       "dev.mayaqq.biomecompass.BiomeCompass"
+    ],
+    "fabric-datagen": [
+        "dev.mayaqq.biomecompass.datagen.BiomeCompassDatagen"
     ]
   },
   "depends": {
     "fabricloader": "*",
     "fabric-api": "*",
     "minecraft": ">=${minecraft_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/w7PpGax9Bq"
+      }
+    }
   }
 }

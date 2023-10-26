@@ -3,8 +3,9 @@ package dev.mayaqq.biomecompass.item;
 import dev.mayaqq.biomecompass.BiomeCompass;
 import dev.mayaqq.biomecompass.gui.BiomeSelectionGui;
 import dev.mayaqq.biomecompass.helper.TextHelper;
-import dev.mayaqq.biomecompass.registry.BCItems;
+import dev.mayaqq.biomecompass.registry.BiomeCompassItems;
 import eu.pb4.polymer.core.api.item.PolymerItem;
+import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,8 +36,11 @@ public class BiomeCompassItem extends Item implements PolymerItem {
     public static final String BIOME_POS_KEY = BiomeCompass.id("biome_pos").toString();
     public static final String BIOME_TRACKED_KEY = BiomeCompass.id("biome_tracked").toString();
 
+    private final int modelData;
+
     public BiomeCompassItem(Settings settings) {
         super(settings);
+        this.modelData = PolymerResourcePackUtils.requestModel(Items.COMPASS, BiomeCompass.id("item/biome_compass")).value();
     }
 
     private static boolean hasBiome(ItemStack stack) {
@@ -70,7 +74,7 @@ public class BiomeCompassItem extends Item implements PolymerItem {
             this.writeNbt(world.getRegistryKey(), pos, oldCompass.getOrCreateNbt(), biomeName);
         } else {
             oldCompass.decrement(1);
-            ItemStack newCompass = BCItems.BIOME_COMPASS.getDefaultStack();
+            ItemStack newCompass = BiomeCompassItems.BIOME_COMPASS.getDefaultStack();
 
             NbtCompound nbt = oldCompass.hasNbt() ? oldCompass.getNbt().copy() : new NbtCompound();
             newCompass.setNbt(nbt);
@@ -119,10 +123,15 @@ public class BiomeCompassItem extends Item implements PolymerItem {
     public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
         ItemStack fake = PolymerItem.super.getPolymerItemStack(itemStack, context, player);
 
-        if (hasBiome(itemStack)) {
+        if (!PolymerResourcePackUtils.hasPack(player)) {
             fake.addEnchantment(Enchantments.INFINITY, 0);
         }
 
         return fake;
+    }
+
+    @Override
+    public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
+        return this.modelData;
     }
 }

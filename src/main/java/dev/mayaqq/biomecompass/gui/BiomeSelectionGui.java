@@ -65,7 +65,10 @@ public class BiomeSelectionGui {
             }
             Biome biome = biomesList.get(i);
             Identifier biomeId = biomes.getId(biome);
-            Text biomeName = TextHelper.getBiomeNameFormatted(biomeId);
+
+            String biomeColor = biome.getTemperature() > 1.0 ? "§c" : biome.getTemperature() < 0.15 ? "§b" : "§a";
+            String biomeNameString = biomeId.getPath().toString().replaceAll("_", " ");
+            Text biomeName = Text.of(biomeColor + biomeNameString);
 
             Item biomeItem = biome.getTemperature() > 1.0 ? Items.LAVA_BUCKET : biome.getTemperature() < 0.15 ? Items.SNOWBALL : Items.GRASS_BLOCK;
 
