@@ -1,4 +1,4 @@
-package dev.mayaqq.biomecompass.datagen.recipes;
+package dev.mayaqq.biomecompass.datagen.provider;
 
 import dev.mayaqq.biomecompass.registry.BiomeCompassItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -14,16 +14,15 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
-public class BiomeCompassRecipes extends FabricRecipeProvider {
-    public BiomeCompassRecipes(FabricDataOutput output) {
+public class BiomeCompassRecipeProvider extends FabricRecipeProvider {
+    public BiomeCompassRecipeProvider(FabricDataOutput output) {
         super(output);
     }
 
     @Override
     public void generate(Consumer<RecipeJsonProvider> exporter) {
-
-        TagKey<Item> saplings = TagKey.of(Registries.ITEM.getKey(), mcId("saplings"));
-        TagKey<Item> logs = TagKey.of(Registries.ITEM.getKey(), mcId("logs"));
+        TagKey<Item> saplings = TagKey.of(Registries.ITEM.getKey(), new Identifier("saplings"));
+        TagKey<Item> logs = TagKey.of(Registries.ITEM.getKey(), new Identifier("logs"));
 
         ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, BiomeCompassItems.BIOME_COMPASS)
                 .pattern("#0#")
@@ -37,9 +36,5 @@ public class BiomeCompassRecipes extends FabricRecipeProvider {
                         FabricRecipeProvider.conditionsFromItem(Items.COMPASS)
                 )
                 .offerTo(exporter);
-    }
-
-    public static Identifier mcId(String path) {
-        return new Identifier("minecraft", path);
     }
 }

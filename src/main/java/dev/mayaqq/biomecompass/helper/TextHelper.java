@@ -3,7 +3,6 @@ package dev.mayaqq.biomecompass.helper;
 import dev.mayaqq.biomecompass.item.BiomeCompassItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -13,15 +12,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class TextHelper {
     public static Text getBiomeNameFormatted(ItemStack stack) {
-        return getBiomeNameFormatted(stack.getNbt());
-    }
-
-    public static Text getBiomeNameFormatted(NbtCompound nbt) {
-        return getBiomeNameFormatted(nbt.getString(BiomeCompassItem.BIOME_NAME_KEY));
-    }
-
-    public static Text getBiomeNameFormatted(String name) {
-        return Text.literal(name).formatted(Formatting.DARK_GREEN);
+        return Text.literal(stack.getNbt().getString(BiomeCompassItem.BIOME_NAME_KEY)).formatted(Formatting.DARK_GREEN);
     }
 
     public static Text getBiomeNameFormatted(Identifier id) {
@@ -29,7 +20,7 @@ public class TextHelper {
     }
 
     public static Text getBlockPosFormatted(ItemStack stack) {
-        return getBlockPosFormatted(NbtHelper.toBlockPos((NbtCompound) stack.getNbt().get(BiomeCompassItem.BIOME_POS_KEY)));
+        return getBlockPosFormatted(NbtHelper.toBlockPos(stack.getNbt().getCompound(BiomeCompassItem.BIOME_POS_KEY)));
     }
 
     public static Text getBlockPosFormatted(BlockPos pos) {

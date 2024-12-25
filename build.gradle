@@ -1,91 +1,67 @@
 plugins {
-    id 'fabric-loom' version '1.4-SNAPSHOT'
-    id 'maven-publish'
-}
-
-base {
-    archivesName = project.archives_base_name
+	id 'fabric-loom' version '1.8.+'
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
-repositories {
-    maven { url 'https://maven.nucleoid.xyz' } // Polymer, SGUI, Server Translations API
+base {
+	archivesName = project.archives_base_name
 }
 
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Polymer
-    modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
-    modImplementation include("eu.pb4:polymer-resource-pack:${project.polymer_version}")
-    // SGUI
-    modImplementation include("eu.pb4:sgui:${project.sgui_version}")
-    // Server Translations API
-    modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translations_version}")
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    it.options.release = 17
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-
-    withSourcesJar()
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${base.archivesName.get()}" }
-    }
+fabricApi {
+	configureDataGeneration()
 }
 
 loom {
-    runs {
-        datagenClient {
-            inherit server
-            name "Data Generation"
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
-
-            runDir "build/datagen"
-        }
-    }
-    runs {
-        mixinDebug {
-            inherit client
-            name "Mixin Debug"
-            vmArg("-Dmixin.debug.export=true")
-        }
-    }
+	mods {
+		"biomecompass" {
+			sourceSet sourceSets.main
+		}
+	}
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs += [
-                    'src/main/generated'
-            ]
-        }
-    }
+repositories {
+	maven { // Polymer, SGUI, Server Translations API
+		name = 'NucleoidMC'
+		url = 'https://maven.nucleoid.xyz'
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// SGUI
+	modImplementation include("eu.pb4:sgui:${project.sgui_version}")
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	it.options.release = 17
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
 }

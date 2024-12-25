@@ -8,33 +8,29 @@
     "Mayaqq"
   ],
   "contributors": [
-    "unilock",
-    "800020h"
+    "800020h",
+    "unilock"
   ],
   "contact": {
-    "sources": "https://github.com/MayaqqDev/biome-compass"
+    "sources": "https://github.com/unilock/biome-compasser"
   },
-  "license": "LGPL-3.0",
+  "license": "LGPL-3.0-only",
   "icon": "assets/biomecompass/icon.png",
   "environment": "*",
   "entrypoints": {
+    "fabric-datagen": [
+      "dev.mayaqq.biomecompass.datagen.BiomeCompassDatagen"
+    ],
     "main": [
       "dev.mayaqq.biomecompass.BiomeCompass"
     ],
-    "fabric-datagen": [
-        "dev.mayaqq.biomecompass.datagen.BiomeCompassDatagen"
+    "client": [
+      "dev.mayaqq.biomecompass.BiomeCompassClient"
     ]
   },
   "depends": {
     "fabricloader": "*",
-    "fabric-api": "*",
-    "minecraft": ">=${minecraft_version}"
-  },
-  "custom": {
-    "modmenu": {
-      "links": {
-        "modmenu.discord": "https://discord.gg/w7PpGax9Bq"
-      }
-    }
+    "minecraft": ">=1.20",
+    "fabric-api": "*"
   }
 }

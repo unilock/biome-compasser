@@ -31,11 +31,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class BiomeSelectionGui {
-
-    public static Registry<Biome> getRegistry(ServerWorld world) {
-        return world.getRegistryManager().get(RegistryKeys.BIOME);
-    }
-
     public static void open(ServerPlayerEntity player, int page, Hand hand) {
         open(player, page, hand, "");
     }
@@ -141,13 +136,30 @@ public class BiomeSelectionGui {
         gui.open();
     }
 
+    public static Registry<Biome> getRegistry(ServerWorld world) {
+        return world.getRegistryManager().get(RegistryKeys.BIOME);
+    }
+
     private static Pair<BlockPos, RegistryEntry<Biome>> executeLocateBiome(BlockPos pos, ServerWorld world, Biome biome) {
         Predicate<RegistryEntry<Biome>> predicate = new RegistryKeyBased<>(RegistryKey.of(RegistryKeys.BIOME, getRegistry(world).getId(biome)));
         return world.locateBiome(predicate, pos, 6400, 32, 64);
     }
 
-    record RegistryKeyBased<T>(RegistryKey<T> key) implements RegistryPredicateArgumentType.RegistryPredicate<T> {
+    private static void filterInput(ServerPlayerEntity player, Hand hand) {
+        try {
+            SignGui gui = new SignGui(player) {
+                @Override
+                public void onClose() {
+                    BiomeSelectionGui.open(player, 0, hand, this.getLine(0).getString());
+                }
+            };
+            gui.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    record RegistryKeyBased<T>(RegistryKey<T> key) implements RegistryPredicateArgumentType.RegistryPredicate<T> {
         public Either<RegistryKey<T>, TagKey<T>> getKey() {
             return Either.left(this.key);
         }
@@ -162,20 +174,6 @@ public class BiomeSelectionGui {
 
         public String asString() {
             return this.key.getValue().toString();
-        }
-    }
-
-    private static void filterInput(ServerPlayerEntity player, Hand hand) {
-        try {
-            SignGui gui = new SignGui(player) {
-                @Override
-                public void onClose() {
-                    BiomeSelectionGui.open(player, 0, hand, this.getLine(0).getString());
-                }
-            };
-            gui.open();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

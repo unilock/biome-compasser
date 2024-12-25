@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BiomeCompass implements ModInitializer {
-
     public static final String MOD_ID = "biomecompass";
     public static final Logger LOGGER = LoggerFactory.getLogger("BiomeCompass");
 
@@ -17,6 +16,6 @@ public class BiomeCompass implements ModInitializer {
     }
 
     public static Identifier id(String path) {
-        return new Identifier("biomecompass", path);
+        return new Identifier(MOD_ID, path);
     }
 }
