@@ -5,6 +5,10 @@ import dev.mayaqq.biomecompass.gui.BiomeSelectionGui;
 import dev.mayaqq.biomecompass.helper.TextHelper;
 import dev.mayaqq.biomecompass.registry.BiomeCompassItems;
 import eu.pb4.polymer.core.api.item.PolymerItem;
+import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
+import eu.pb4.polymer.core.api.utils.PolymerUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class BiomeCompassItem extends Item implements PolymerItem {
+public class BiomeCompassItem extends Item implements PolymerItem, PolymerKeepModel {
     public static final String BIOME_NAME_KEY = BiomeCompass.id("biome_name").toString();
     public static final String BIOME_DIMENSION_KEY = BiomeCompass.id("biome_dimension").toString();
     public static final String BIOME_POS_KEY = BiomeCompass.id("biome_pos").toString();
@@ -112,11 +116,13 @@ public class BiomeCompassItem extends Item implements PolymerItem {
 
     @Override
     public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity serverPlayerEntity) {
-        return Items.COMPASS;
+        return EnvType.CLIENT.equals(FabricLoader.getInstance().getEnvironmentType()) ? BiomeCompassItems.BIOME_COMPASS : Items.COMPASS;
     }
 
     @Override
     public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
+        if (EnvType.CLIENT.equals(FabricLoader.getInstance().getEnvironmentType())) return itemStack;
+
         ItemStack fake = PolymerItem.super.getPolymerItemStack(itemStack, context, player);
         if (hasBiome(itemStack)) {
             NbtCompound nbt = itemStack.getNbt().copy();
