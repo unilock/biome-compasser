@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.8.+'
+	id 'fabric-loom' version '1.9.+'
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -38,6 +38,11 @@ dependencies {
 
 	// SGUI
 	modImplementation include("eu.pb4:sgui:${project.sgui_version}")
+	
+	// Polymer
+	modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
+	// Server Translations API
+	modImplementation include("xyz.nucleoid:server-translations-api:${project.stapi_version}")
 }
 
 processResources {
@@ -63,5 +68,9 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${base.archivesName.get()}" }
+	}
+
+	into("data/biomecompass/lang") {
+		from("src/main/resources/assets/biomecompass/lang")
 	}
 }
